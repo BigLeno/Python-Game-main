@@ -3,9 +3,10 @@ from sys import exit
 from random import randint
 
 #creating a score mode
-def display_score():
+def display_score(points):
     current_time = int(pygame.time.get_ticks() /100) - start_time
-    score_surface = test_font.render(f'{current_time}',False,(64,64,64)) #curren_time NEED TO BE AN INT
+    #score_surface = test_font.render(f'{current_time}',False,(64,64,64)) #curren_time NEED TO BE AN INT
+    score_surface = test_font.render(f'{points}',False,(64,64,64)) #necessito substituir current_time pela quantidade de entidades já superadas
     score_rect = score_surface.get_rect(topleft = (425,50))
     screen.blit(score_surface,score_rect)
     print(current_time)
@@ -23,10 +24,9 @@ def obstacle_movement(obstacle_list):
             else:                
                 #pygame.draw.rect(screen,'Blue',obstacle_rect)
                 # screen.blit(stirge_surface,obstacle_rect)               
-                screen.blit(stirge_frames[stirge_index], obstacle_rect)               
-                
-        
-        
+                screen.blit(stirge_frames[stirge_index], obstacle_rect)
+    
+
         obstacle_list = [obstacle for obstacle in obstacle_list if obstacle.x >- 100] #this piece of code deletes the snakes that go out of screen
         # for obstacle in obstacle_list:
         #     if obstacle.x >- 100:
@@ -40,9 +40,18 @@ def collisions(player,obstacles):
 
     if obstacles:
         for obstacles_rect in obstacles:
+            
             if player.colliderect(obstacles_rect): return game_active == False
     return game_active == True
 
+def add_points(player, obstacle_list, points):
+    """Criando a função que vai contar os pontos"""
+    if obstacle_list:
+        for obstacles_rect in obstacle_list:
+            if player_rect.x > obstacles_rect.x:
+                points = points + 1
+
+    return points
 
 def player_animation():
     global player_surface, player_index, player_surface_jump, player_index_jump
@@ -263,7 +272,9 @@ while True:
     #Score  
         #pygame.draw.rect(screen,'Black',score_rect)
         screen.blit(score_surface,score_rect)
-        display_score()
+        starter_points = 0
+        points = add_points(player_rect, obstacle_rect_list, starter_points)
+        display_score(points)
         
     #Snake   
         # snake_rect.x -= 3
