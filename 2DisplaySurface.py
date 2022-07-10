@@ -1,12 +1,15 @@
 import pygame
+import os
 from sys import exit
 from random import randint
 
 #creating a score mode
-def display_score(points):
+#def display_score(points):
+def display_score(score):
     current_time = int(pygame.time.get_ticks() /100) - start_time
+    score = int(len(score))
     #score_surface = test_font.render(f'{current_time}',False,(64,64,64)) #curren_time NEED TO BE AN INT
-    score_surface = test_font.render(f'{points}',False,(64,64,64)) #necessito substituir current_time pela quantidade de entidades já superadas
+    score_surface = test_font.render(f'Pontuação: {score}',False,(64,64,64)) #necessito substituir current_time pela quantidade de entidades já superadas
     score_rect = score_surface.get_rect(topleft = (425,50))
     screen.blit(score_surface,score_rect)
     print(current_time)
@@ -25,6 +28,10 @@ def obstacle_movement(obstacle_list):
                 #pygame.draw.rect(screen,'Blue',obstacle_rect)
                 # screen.blit(stirge_surface,obstacle_rect)               
                 screen.blit(stirge_frames[stirge_index], obstacle_rect)
+
+            #if obstacle_rect.x < player_rect.x:
+                #points += 1
+
     
 
         obstacle_list = [obstacle for obstacle in obstacle_list if obstacle.x >- 100] #this piece of code deletes the snakes that go out of screen
@@ -40,7 +47,6 @@ def collisions(player,obstacles):
 
     if obstacles:
         for obstacles_rect in obstacles:
-            
             if player.colliderect(obstacles_rect): return game_active == False
     return game_active == True
 
@@ -48,10 +54,8 @@ def add_points(player, obstacle_list, points):
     """Criando a função que vai contar os pontos"""
     if obstacle_list:
         for obstacles_rect in obstacle_list:
-            if player_rect.x > obstacles_rect.x:
-                points = points + 1
-
-    return points
+            if obstacles_rect.x <- 1:
+                score.append(points)
 
 def player_animation():
     global player_surface, player_index, player_surface_jump, player_index_jump
@@ -272,9 +276,11 @@ while True:
     #Score  
         #pygame.draw.rect(screen,'Black',score_rect)
         screen.blit(score_surface,score_rect)
-        starter_points = 0
-        points = add_points(player_rect, obstacle_rect_list, starter_points)
-        display_score(points)
+        points = 1
+        score = []
+        add_points((player_rect), obstacle_rect_list, points)
+        print(len(score))
+        display_score(score)
         
     #Snake   
         # snake_rect.x -= 3
