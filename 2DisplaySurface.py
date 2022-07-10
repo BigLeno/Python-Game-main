@@ -27,12 +27,7 @@ def obstacle_movement(obstacle_list):
             else:                
                 #pygame.draw.rect(screen,'Blue',obstacle_rect)
                 # screen.blit(stirge_surface,obstacle_rect)               
-                screen.blit(stirge_frames[stirge_index], obstacle_rect)
-
-            #if obstacle_rect.x < player_rect.x:
-                #points += 1
-
-    
+                screen.blit(stirge_frames[stirge_index], obstacle_rect) 
 
         obstacle_list = [obstacle for obstacle in obstacle_list if obstacle.x >- 100] #this piece of code deletes the snakes that go out of screen
         # for obstacle in obstacle_list:
