@@ -1,149 +1,18 @@
-from turtle import width
 import pygame
+import os
 from sys import exit
-import random
-from random import randint,choice
+from random import randint
 
-
-class Player(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
-        #Walking
-        player_surface1 = pygame.image.load('WalkSoldier\Soldado (1).png').convert_alpha()
-        player_surface2 = pygame.image.load('WalkSoldier\Soldado (2).png').convert_alpha()
-        player_surface3 = pygame.image.load('WalkSoldier\Soldado (3).png').convert_alpha()
-        player_surface4 = pygame.image.load('WalkSoldier\Soldado (4).png').convert_alpha()
-
-        self.player_walk = [player_surface1,player_surface2,player_surface3,player_surface4]
-        self.player_index = 0
-        #self.player_surface = player_walk[player_index]
-
-        self.image = self.player_walk[self.player_index]
-        self.rect = self.image.get_rect(bottomright = (200,550))
-        self.gravity = 0
-
-        #Jumping
-        player_jump1 = pygame.image.load('jumpSoldier\Tile050.png').convert_alpha
-        player_jump2 = pygame.image.load('jumpSoldier\Tile051.png').convert_alpha
-        player_jump3 = pygame.image.load('jumpSoldier\Tile052.png').convert_alpha
-        player_jump4 = pygame.image.load('jumpSoldier\Tile053.png').convert_alpha
-
-        self.player_jump = [player_jump1,player_jump2,player_jump3,player_jump4]
-        self.player_index_jump = 0
-        #self.player_surface_jump = player_jump[player_index_jump]
-        
-        self.image_jump = self.player_jump[self.player_index_jump]
-    
-    
-    def player_animation(self):
-
-        if self.rect.bottom < 550:
-            self.player_index_jump += 0.1
-        if self.player_index_jump >= len(self.player_jump):
-            self.player_index_jump = 0
-            self.player_image_jump = self.player_jump[int(self.player_index_jump)]
-
-        else:
-            self.player_index += 0.1
-            if self.player_index >= len(self.player_walk):
-                self.player_index = 0
-            self.image = self.player_walk[int(self.player_index)]
-
-    def player_input(self):
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_SPACE] and self.rect.bottom >= 550:
-            self.gravity = -17
-
-
-    
-    def apply_gravity(self):
-        self.gravity +=1
-        self.rect.y += self.gravity
-        if self.rect.bottom >= 550:
-            self.rect.bottom = 550
-    
-
-    def update(self):
-        self.player_input()
-        self.apply_gravity()
-        self.player_animation()
-
-class Obstacle(pygame.sprite.Sprite):
-    def __init__(self,type):
-        super().__init__()
-
-        if type == 'stirge':
-            stirge_frame1 = pygame.image.load('1.png').convert_alpha()
-            stirge_frame1 = pygame.transform.scale(stirge_frame1,(50,50))
-            stirge_frame2 = pygame.image.load('2.png').convert_alpha()      
-            stirge_frame2 = pygame.transform.scale(stirge_frame2,(50,50))
-
-            #stirge_index = 0
-            self.frames = [stirge_frame1, stirge_frame2]
-            #stirge_surface = stirge_frames[stirge_index]
-            y_pos = 515
-        else:
-            snake_frame1 = pygame.image.load('Snake\Cobra 1.png').convert_alpha()
-            snake_frame1 = pygame.transform.scale(snake_frame1,(40,40))
-
-            snake_frame2 = pygame.image.load('Snake\Cobra 2.png').convert_alpha()
-            snake_frame2 = pygame.transform.scale(snake_frame2,(40,40))
-
-            snake_frame3 = pygame.image.load('Snake\Cobra 3.png').convert_alpha()
-            snake_frame3 = pygame.transform.scale(snake_frame3,(40,40))
-
-            snake_frame4 = pygame.image.load('Snake\Cobra 4.png').convert_alpha()
-            snake_frame4 = pygame.transform.scale(snake_frame4,(40,40))
-
-            #snake_index = 0
-            self.frames = [snake_frame1, snake_frame2, snake_frame3, snake_frame4]
-            #snake_surface = snake_frames[snake_index]
-            y_pos = 550
-
-        self.animation_index = 0
-        self.image = self.frames[self.animation_index]
-        self.rect = self.image.get_rect(midbottom = (random.randint(900,1100),y_pos))
-    
-    def animation_state(self):
-        self.animation_index += 0.1
-        if self.animation_index >=len(self.frames):
-            self.animation_index = 0
-        self.image = self.frames[int(self.animation_index)]
-
-    def update(self):
-        self.animation_state
-        self.rect.x -= 6
-        self.destroy()
-
-    def destroy(self):
-        if self.rect.x <= -100:
-            self.kill()
-
-#creating a timer
-def display_timer():
-
+#creating a score mode
+#def display_score(points):
+def display_score(score):
     current_time = int(pygame.time.get_ticks() /100) - start_time
-    timer_surface = test_font.render(f'{current_time}',False,(64,64,64)) #curren_time NEED TO BE AN INT
-    timer_rect = timer_surface.get_rect(topleft = (425,50))
-    screen.blit(timer_surface,timer_rect)
+    score = int(score)
+    #score_surface = test_font.render(f'{current_time}',False,(64,64,64)) #curren_time NEED TO BE AN INT
+    score_surface = test_font.render(f'Pontuação: {score}',False,(64,64,64)) #necessito substituir current_time pela quantidade de entidades já superadas
+    score_rect = score_surface.get_rect(topleft = (425,50))
+    screen.blit(score_surface,score_rect)
     #print(current_time)
-
-def display_score():
-    """Função que exibe a pontuação"""
-    points = 0
-    score = []
-    if event.type == score_timer_1 and game_active == True:
-        score.append(points)
-    
-    if event.type == score_timer_2 and game_active == True:
-        score.append(points)
-
-    
-    score_surface = test_font.render(f'Score: {len(score)} ',False, 'Black')
-    score_rect = score_surface.get_rect(topleft = (600 ,40))
-    screen.blit(score_surface, score_rect)
-    print(len(score))
-    
 
 def obstacle_movement(obstacle_list):
     if obstacle_list:
@@ -151,59 +20,76 @@ def obstacle_movement(obstacle_list):
             obstacle_rect.x -= 5
 
             if obstacle_rect.bottom == 550:
+                # pygame.draw.rect(screen,'Blue',obstacle_rect)
+                # screen.blit(snake_surface,obstacle_rect)
                 screen.blit(snake_frames[snake_index], obstacle_rect)
                 
             else:                
                 #pygame.draw.rect(screen,'Blue',obstacle_rect)
                 # screen.blit(stirge_surface,obstacle_rect)               
-                screen.blit(stirge_frames[stirge_index], obstacle_rect)               
+                screen.blit(stirge_frames[stirge_index], obstacle_rect) 
+
+        obstacle_list = [obstacle for obstacle in obstacle_list if obstacle.x >- 100] #this piece of code deletes the snakes that go out of screen
+        print(obstacle_list)
+        score = 0
+
+        for a in obstacle_list:
+            if a.x == 115:
+                score += 1
+                print(score)
+                display_score(score)
                 
-        # global points
-        # points = 0
-        
-        obstacle_list = [obstacle for obstacle in obstacle_list  if obstacle.x >- 100] #this piece of code deletes the snakes that go out of screen
+
+
+
         # for obstacle in obstacle_list:
         #     if obstacle.x >- 100:
-        #         points += 1
+        #         aux.append(obstacle)
 
         return obstacle_list
+    else: return []
+
+
+def collisions(player,obstacles):
+
+    if obstacles:
+        for obstacles_rect in obstacles:
+            if player.colliderect(obstacles_rect): return game_active == False
+    return game_active == True
+
+#def add_points(player, obstacle_list, score):
+#    """Criando a função que vai contar os pontos"""
+#   if obstacle_list:
+#        for obstacles_rect in obstacle_list:
+#            if obstacles_rect.x <- 1:
+#                score += 1
+
+def player_animation():
+    global player_surface, player_index, player_surface_jump, player_index_jump
+
+    if player_rect.bottom < 550:
+        player_index_jump += 0.1
+        if player_index_jump >= len(player_jump):
+            player_index_jump = 0
+        player_surface_jump = player_jump[int(player_index_jump)]
+
     else:
-         return []
+        player_index += 0.1
+        if player_index >= len(player_walk):
+            player_index = 0
+        player_surface = player_walk[int(player_index)]
 
-
-    #if obstacle_list:
-        #for obstacle_rect in obstacle_list:
-            #if player_rect.x >= obstacle_rect:
-                #score_value += 1
-
-
-def collision_sprite(): 
-    if pygame.sprite.spritecollide(player.sprite,obstacle_group,False):#1sprite, 2group, boolean:checks if the sprite collides with the group will be destroyed or noit
-    #this entire statment returns a list if doesnt collide with anything is gonna return an empity list
-        obstacle_group.empty()
-        return False
-    else:
-        return True
-        
+   
 #initializing pygame
 pygame.init()
 
 #Creating your screen and important variables
-width = 800
-height = 600
-screen = pygame.display.set_mode((width,height)) #widht,height #(()) its a tuple
+screen = pygame.display.set_mode((800,600)) #widht,height #(()) its a tuple
 pygame.display.set_caption('MapleStory Wannabe') #setting the name of the game
 clock = pygame.time.Clock()
 test_font = pygame.font.Font('Pixeltype.ttf',30) #font type and font size
 game_active = False
-start_time = 0
-
-#GROUPS
-player = pygame.sprite.GroupSingle() #this is a group single
-player.add(Player()) #this is a sprite
-
-obstacle_group = pygame.sprite.Group()
-
+#start_time = 0
 
 #background_surface = pygame.image.load('backgrounds.png').convert_alpha() #converting an image to alpha facilitates pygame to read the code and make it lighter
 
@@ -212,7 +98,6 @@ title1_surface = pygame.image.load('Tiles\Dois.png').convert_alpha()
 title2_surface = pygame.image.load('Tiles\Dois.png').convert_alpha()
 title3_surface = pygame.image.load('Tiles\Dois.png').convert_alpha()
 title4_surface = pygame.image.load('Tiles\Dois.png').convert_alpha()
-
 title5_surface = pygame.image.load('Tiles\Dois.png').convert_alpha()
 title6_surface = pygame.image.load('Tiles\Dois.png').convert_alpha()
 title7_surface = pygame.image.load('Tiles\Dois.png').convert_alpha()
@@ -220,13 +105,9 @@ title8_surface = pygame.image.load('Tiles\Dois.png').convert_alpha()
 
 game_over = pygame.image.load('gameover.png').convert_alpha()
 
-#score
-score_surface = test_font.render('Score: ',False, 'Black')
-score_rect = score_surface.get_rect(topleft = (600 ,40))
-
-#timer
-timer_surface = test_font.render('Timer: ', False, 'Black') #text you want to display, anti anliasing(False or True) , color
-timer_rect = timer_surface.get_rect(topleft = (320,47 ))
+#score 
+score_surface = test_font.render('Timer:', False, 'Black') #text you want to display, anti anliasing(False or True) , color
+score_rect = score_surface.get_rect(topleft = (320,47 ))
 
 #obstacles
 snake_frame1 = pygame.image.load('Snake\Cobra 1.png').convert_alpha()
@@ -311,18 +192,11 @@ pygame.time.set_timer(snake_animation_timer,100)
 stirge_animation_timer = pygame.USEREVENT + 3
 pygame.time.set_timer(stirge_animation_timer,200)
 
-score_timer_1 = pygame.USEREVENT + 4
-pygame.time.set_timer(score_timer_1, 3000)
 
-score_timer_2 = pygame.USEREVENT + 4
-pygame.time.set_timer(score_timer_2, 1400)
-
-score_timer_3 = pygame.USEREVENT + 4
-pygame.time.set_timer(score_timer_3, 1500)
-
-
-
-
+#defining the color of the background (display surface)
+#test_surface = pygame.Surface((100,200))
+#test_surface.fill('Red')
+ 
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -350,7 +224,11 @@ while True:
 
         if game_active == True:
             if event.type == obstacle_timer:
-                obstacle_group.add(Obstacle(choice(['stirge','snail','snail'])))
+                if randint(0,2):#random statment that triggers true or false (0 or 1)
+                    obstacle_rect_list.append(snake_frames[snake_index].get_rect(bottomright = (randint(1100,1200),550)))
+                else:
+                    obstacle_rect_list.append(stirge_frames[stirge_index].get_rect(bottomright = (randint(1100,1200),515)))
+                    #print('test')
     
             if event.type == snake_animation_timer and game_active == True:
                 snake_index = (snake_index + 1) % 4
@@ -358,6 +236,35 @@ while True:
             if event.type == stirge_animation_timer and game_active == True:
                 stirge_index = (stirge_index + 1) % 2
 
+        # if game_active == True:
+        #     if event.type == obstacle_timer:
+        #         if randint(0,2):#random statment that triggers true or false (0 or 1)
+        #             obstacle_rect_list.append(snake_surface.get_rect(bottomright = (randint(1100,1200),550)))
+        #         else:
+        #             obstacle_rect_list.append(stirge_surface.get_rect(bottomright = (randint(1100,1200),530)))
+        #             #print('test')
+    
+        #     if event.type == snake_animation_timer and game_active == True:
+        #         if snake_index == 0:
+        #             snake_index = 1
+
+        #         if snake_index == 1:
+        #             snake_index = 2
+
+        #         if snake_index == 2:
+        #             snake_index = 3
+
+        #         else:
+        #             snake_index = 0
+        #         snake_surface = snake_frames[snake_index]
+
+             
+        #     if event.type == stirge_animation_timer and game_active == True:
+        #         if stirge_index == 0:
+        #             stirge_index = 1
+        #         else:
+        #             stirge_index = 0
+        #             stirge_surface = stirge_frames[stirge_index]
                 
     if game_active == True:
     #background
@@ -373,29 +280,42 @@ while True:
         screen.blit(title6_surface,(672,550))  #blit is used when you want to put a surface in another surface    
         screen.blit(title7_surface,(800,550))  #blit is used when you want to put a surface in another surface    
         screen.blit(title8_surface,(928,550))  #blit is used when you want to put a surface in another surface    
-    
-    #score
-        screen.blit(score_surface, score_rect)
-        display_score()
-
-    #timer
+    #Score  
         #pygame.draw.rect(screen,'Black',score_rect)
-        screen.blit(timer_surface,timer_rect)
-        display_timer()
+        screen.blit(score_surface,score_rect)
+        
+    #Snake   
+        # snake_rect.x -= 3
+        # if snake_rect.right <= 0:
+        #     snake_rect.left = 1000
+        # #pygame.draw.rect(screen,'Red',snake_rect)
+        # screen.blit(snake_surface,(snake_rect))
 
-    #Drawing and updating the player class
-        player.draw(screen)
-        player.update()
-
-    #Drawing and updating the Obstacle class
-        obstacle_group.draw(screen)
-        obstacle_group.update()
-
-    #Colision 
-        game_active = collision_sprite()
+    #player
+        player_gravity += 1
+        player_rect.y += player_gravity
+        
         #simulating the colision with the floor
         if player_rect.bottom >= 550:
             player_rect.bottom = 550
+
+        player_animation()
+
+        
+        #pygame.draw.rect(screen,'Blue',player_rect)
+        screen.blit(player_surface,(player_rect))   
+
+    #Obstacle movement
+        obstacle_rect_list = obstacle_movement(obstacle_rect_list)
+
+    #collision
+
+        #game_active = collisions(player_rect,obstacle_rect_list) #collisions can return false or true, if the player hits an obstacle it will return false ending the
+
+        #player_rect.colliderect(snake_rect)
+        #print(player_rect.colliderect(snake_rect)) #the moment rectangle colides it becames true
+        
+        #End the game if the player touches the snake
         
 
     if game_active == False:
@@ -407,6 +327,13 @@ while True:
         #these two following lines makes the character get back to the proper position when restarting the game
         player_rect.midbottom = (80,550)
         player_gravity = 0
+
+        #screen.blit(player_stand,player_stand_rect)
+    
+    # elif game_active == 'game_over':
+
+    #     game_over = pygame.transform.scale(game_over,(800,600))
+    #     screen.blit(game_over,(0,0)) 
 
     #update 
     # everything
